@@ -1,16 +1,17 @@
+package com.tus.models;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table
 public class Card {
-	private String name, typeLine, text, coulor, imageURL;
+	private String name, typeLine, text, colour, imageURL;
 	private int  cost, power, toughness;
-	public Card(String name, String typeLine, String text, String color, int cost, int power, int toughness) {
+	public Card(String name, String typeLine, String text, String colour, int cost, int power, int toughness) {
         this.name = name;
         this.typeLine = typeLine;
         this.text = text;
-        this.color = color;
+        this.colour = colour;
         this.cost = cost;
         this.power = power;
         this.toughness = toughness;
@@ -29,8 +30,8 @@ public class Card {
         return text;
     }
 
-    public String getColor() {
-        return color;
+    public String getColour() {
+        return colour;
     }
     
     public String getImageURL() {
@@ -62,8 +63,8 @@ public class Card {
         this.text = text;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColour(String colour) {
+        this.colour = colour;
     }
     
     public void setImageURL(String imageURL) {
