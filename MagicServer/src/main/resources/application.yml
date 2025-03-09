@@ -1,20 +1,22 @@
-spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: 
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-    defer-datasource-initialization: true
-    show-sql: true
-  security:
-    user:
-      name: admin
-      password: admin
-
 server:
   port: 9092
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/colection
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+  h2:
+    console:
+      enabled: false 
