@@ -56,8 +56,14 @@
     </style>
     <script>
     function escapeQuotes(str) {
-        return str ? str.replace(/'/g, "\\'").replace(/"/g, '\\"') : "";
+        return str
+            ? str.replace(/\\/g, "\\\\") // Escape backslashes
+                 .replace(/'/g, "\\'")  // Escape single quotes
+                 .replace(/"/g, '\\"')  // Escape double quotes
+                 .replace(/\r?\n/g, " ") // Remove newlines
+            : "";
     }
+
     function loadCards() {
         fetch("/api/cards")
             .then(response => {
@@ -90,11 +96,19 @@
                         <td>${card.power}</td>
                         <td>${card.toughness}</td>
                         <td>
-                            <button onclick="openEditModal(${card.id}, '${escapeQuotes(card.name)}', '${escapeQuotes(card.typeLine)}', '${escapeQuotes(card.text)}', '${escapeQuotes(card.color)}', ${card.cost}, ${card.power}, ${card.toughness})">
-                                Edit
-                            </button>
-                        </td>
-                    `;                    
+                        <button class="edit-btn"
+                            data-id="${card.id}"
+                            data-name="${escapeQuotes(card.name)}"
+                            data-type="${escapeQuotes(card.typeLine)}"
+                            data-text="${escapeQuotes(card.text)}"
+                            data-color="${escapeQuotes(card.color)}"
+                            data-cost="${card.cost}"
+                            data-power="${card.power}"
+                            data-toughness="${card.toughness}">
+                            Edit
+                        </button>
+                    	</td>
+                   	 	`;                    
                     tableBody.appendChild(row);
                 });
             })
@@ -120,6 +134,23 @@
             deleteCard(id);
         };
     }
+    
+    document.addEventListener("click", function(event) {
+        if (event.target.classList.contains("edit-btn")) {
+            const button = event.target;
+            openEditModal(
+                button.dataset.id,
+                button.dataset.name,
+                button.dataset.type,
+                button.dataset.text,
+                button.dataset.color,
+                button.dataset.cost,
+                button.dataset.power,
+                button.dataset.toughness
+            );
+        }
+    });
+
 
     // Close the edit modal
     function closeModal() {

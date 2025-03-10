@@ -64,3 +64,6 @@ body {
 .delete-btn:hover {
     background-color: darkred;
 }
+p{
+	color: black;
+}
