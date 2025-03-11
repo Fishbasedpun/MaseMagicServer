@@ -14,11 +14,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-	private static final String SECRET_KEY = "4981f57ac11c2e710c94954e6e3620bc9930bc49404cf85294a7af28fed7ff4c"; // Use
-																													// a
-																													// secure,
-																													// 256-bit
-																													// key
+	private static final String SECRET_KEY = "4981f57ac11c2e710c94954e6e3620bc9930bc49404cf85294a7af28fed7ff4c";
 
 	private Key getSigningKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

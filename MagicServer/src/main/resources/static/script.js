@@ -32,11 +32,18 @@ $(document).ready(function() {
 		});
 	});
 	
+	$(document).on("click", "#registration", function(e) {
+		e.preventDefault();
+		$("#dynamic-content").load("content/registration.html", function() {
+			$("#sidebar, nav").fadeIn();
+		});
+	});
+		
 	function updateAuthUI() {
         const token = localStorage.getItem("jwt");
         if (token) {
             const decodedToken = jwt_decode(token);
-            const username = decodedToken.username || "User";
+            const username = decodedToken.sub|| "User";
             
             $("#login-btn").hide();
             $("#user-info").show();

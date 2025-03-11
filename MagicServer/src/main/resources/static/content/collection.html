@@ -41,6 +41,14 @@
         $(document).ready(function () {
             loadCards();
         });
+        function escapeQuotes(str) {
+            return str
+                ? str.replace(/\\/g, "\\\\") // Escape backslashes
+                     .replace(/'/g, "\\'")  // Escape single quotes
+                     .replace(/"/g, '\\"')  // Escape double quotes
+                     .replace(/\r?\n/g, " ") // Remove newlines
+                : "";
+        }
 
         function loadCards() {
             $.get("/api/cards", function (cards) {

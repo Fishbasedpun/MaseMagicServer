@@ -43,7 +43,9 @@ public class SecurityConfig {
     	            .requestMatchers("/h2-console/**").permitAll()
     	            .requestMatchers("api/users/login").permitAll()
     	            .requestMatchers("/sonarqube/**").permitAll()  // Allow SonarQube
-    	            .requestMatchers("/actuator/**").permitAll()   // Allow monitoring endpoints (optional)
+    	            .requestMatchers("/actuator/**").permitAll()
+    	            .requestMatchers("/api/cards").permitAll()
+    	            .requestMatchers("/uploads/**").permitAll()
     	            // Allow public access to specified endpoints and static resources
     	            .requestMatchers(
     	                "/",
