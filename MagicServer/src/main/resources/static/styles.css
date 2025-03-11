@@ -67,3 +67,81 @@ body {
 p{
 	color: black;
 }
+
+/* Header Styles */
+.header {
+    background-color: orange;
+    padding: 10px 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#search-bar {
+    flex-grow: 1;
+    max-width: 400px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.user-auth {
+    display: flex;
+    align-items: center;
+}
+
+#login-btn, #logout-btn {
+    padding: 8px 15px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+#login-btn:hover, #logout-btn:hover {
+    background-color: #f0f0f0;
+}
+
+/* Adjust body to avoid overlap with fixed header */
+body {
+    padding-top: 70px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: orange;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}

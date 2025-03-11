@@ -10,7 +10,18 @@
     </script> 
 </head>
 <body>
-
+	<header class="header">
+        <div class="container">
+            <input type="text" id="search-bar" placeholder="Search...">
+            <div class="user-auth">
+                <button id="login-btn">Login</button>
+                <div id="user-info" style="display: none;">
+                    <span id="username"></span>
+                    <button id="logout-btn">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="sidebar">
         <h2>Card Manager</h2>
         <button id="collecion">Collection</button>
@@ -24,7 +35,19 @@
 		<div id="dynamic-content"></div>
 
 	</main>
-
+	
+	 <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <input type="text" id="username-input" placeholder="Enter Username">
+            <input type="password" id="password-input" placeholder="Enter Password">
+            <button id="submit-login">Login</button>
+            <div id="messages"></div>
+        </div>
+    </div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
