@@ -1,7 +1,11 @@
 package com.tus.magic.user_manager.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.apache.hc.client5.http.auth.InvalidCredentialsException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tus.magic.models.Card;
 import com.tus.magic.services.JwtService;
 import com.tus.magic.user_manager.dto.CreateUserRequest;
 import com.tus.magic.user_manager.dto.LoginRequest;
 import com.tus.magic.user_manager.dto.LoginResponse;
 import com.tus.magic.user_manager.models.User;
+import com.tus.magic.user_manager.repo.UserRepository;
 import com.tus.magic.user_manager.service.UserService;
 
 @RestController
@@ -26,6 +32,9 @@ public class UserController {
 
 	private final UserService userService;
 	private final JwtService jwtService;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	public UserController(UserService userService, JwtService jwtService) {
 		this.userService = userService;
@@ -97,7 +106,19 @@ public class UserController {
             return ResponseEntity.ok(loginResponse); // 200 OK with true indicating success
         } catch (InvalidCredentialsException e) {
         	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false); // 401 Unauthorized with false indicating failure
+        }
     }
-
+	
+	@GetMapping("/{userId}/favorites")
+    public ResponseEntity<List<Card>> getUserFavorites(@PathVariable String userId) {
+        Optional<User> userOptional = userRepository.findByUsername(userId);
+        
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Set<Card> favorites = user.getFavoriteCards(); // Get favorite cards
+            
+            return ResponseEntity.ok(favorites.stream().toList());
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -1,9 +1,15 @@
 package com.tus.magic.models;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.tus.magic.user_manager.models.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -23,6 +29,9 @@ public class Card {
     private int toughness;
     @Column(name = "image")
     private String imagePath; 
+    
+    @ManyToMany(mappedBy = "favoriteCards")
+    private Set<User> favoritedByUsers = new HashSet<>();
 
     public Card() {}
 

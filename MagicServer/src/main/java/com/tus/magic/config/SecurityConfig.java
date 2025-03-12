@@ -12,6 +12,8 @@ import com.tus.magic.filter.JWTAuthenticationFilter;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 @Configuration
 @EnableMethodSecurity
@@ -46,6 +48,8 @@ public class SecurityConfig {
     	            .requestMatchers("/actuator/**").permitAll()
     	            .requestMatchers("/api/cards").permitAll()
     	            .requestMatchers("/uploads/**").permitAll()
+                    .requestMatchers("/api/users/{username}/favorites", "/favorites/**").authenticated()
+    	            .requestMatchers("/api/users/**").permitAll()
     	            // Allow public access to specified endpoints and static resources
     	            .requestMatchers(
     	                "/",
@@ -55,7 +59,19 @@ public class SecurityConfig {
     	                "/content/**", 
     	                "/assets/**"  // This covers /assets and all its subfolders/files
     	            ).permitAll()
-    	            .anyRequest().authenticated()
+    	            .anyRequest().permitAll()
     	        ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
-    	    }
+    }
+    
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");  // Ensure Spring Security recognizes roles
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("role"); // Extract roles from the "role" claim in JWT
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+
+        return jwtAuthenticationConverter;
+    }
 }

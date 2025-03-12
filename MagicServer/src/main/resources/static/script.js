@@ -38,6 +38,20 @@ $(document).ready(function() {
 			$("#sidebar, nav").fadeIn();
 		});
 	});
+	
+	$(document).on("click", "#favorites", function(e) {
+		e.preventDefault();
+		$("#dynamic-content").load("content/favorites.html", function() {
+			$("#sidebar, nav").fadeIn();
+		});
+	});
+	
+	$(document).on("click", "#favorite-stats", function(e) {
+		e.preventDefault();
+		$("#dynamic-content").load("content/favorite-stats.html", function() {
+			$("#sidebar, nav").fadeIn();
+		});
+	});
 		
 	function updateAuthUI() {
         const token = localStorage.getItem("jwt");

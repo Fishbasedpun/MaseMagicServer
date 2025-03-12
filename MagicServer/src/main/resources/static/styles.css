@@ -145,3 +145,25 @@ body {
     font-size: 24px;
     cursor: pointer;
 }
+
+.card {
+    width: 100%;  /* Ensure the card takes up full space of its column */
+    max-width: 250px; /* Prevents excessive stretching */
+    min-width: 200px; /* Ensures card doesn't shrink too much */
+    margin: auto; /* Centers the card in its column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card img {
+    width: 100%; /* Ensures image fully expands inside the card */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.card-body {
+    text-align: center;
+    width: 100%;
+}
+
+

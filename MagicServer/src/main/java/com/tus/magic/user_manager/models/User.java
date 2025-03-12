@@ -2,17 +2,21 @@ package com.tus.magic.user_manager.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.tus.magic.models.Card;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Table(name = "users")
-@Data  // This will generate getters, setters, toString, equals, and hashCode methods
+@Data 
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +32,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "user_favorites",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "card_id")
+    )
+    private Set<Card> favoriteCards = new HashSet<>();
 
     public User() {}
 
@@ -43,4 +55,12 @@ public class User implements UserDetails {
 		authorities.add(role);
 		return authorities;
 	}
+    
+    public void addFavoriteCard(Card card) {
+        this.favoriteCards.add(card);
+    }
+
+    public void removeFavoriteCard(Card card) {
+        this.favoriteCards.remove(card);
+    }
 }
