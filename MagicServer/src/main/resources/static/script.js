@@ -9,8 +9,33 @@ const TokenStorage = {
         localStorage.removeItem("jwt");
     }
 };
+function escapeQuotes(str) {
+    return str
+        ? str.replace(/\\/g, "\\\\") // Escape backslashes
+             .replace(/'/g, "\\'")  // Escape single quotes
+             .replace(/"/g, '\\"')  // Escape double quotes
+             .replace(/\r?\n/g, " ") // Remove newlines
+        : "";
+}
+
 $(document).ready(function() {
-	
+	$("#searchButton").click(function () {
+	    let query = $("#searchInput").val().trim();
+	    if (query) {
+	        $("#dynamic-content").load("content/collection.html", function () {
+	            window.history.pushState({}, "", `?search=${encodeURIComponent(query)}`); 
+				loadCards(query);
+	        });
+	    }
+	});
+
+	   $("#searchInput").keypress(function (e) {
+	       if (e.which === 13) { // Enter key pressed
+	           $("#searchButton").click();
+	       }
+	   });
+	   
+	   
 	$(document).on("click", "#collecion", function(e) {
 		e.preventDefault();
 		$("#dynamic-content").load("content/collection.html", function() {

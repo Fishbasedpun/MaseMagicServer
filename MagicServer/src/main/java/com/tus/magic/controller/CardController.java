@@ -66,6 +66,18 @@ public class CardController {
         return cardRepository.findAll();
     }
     
+    @GetMapping("/search")
+    public ResponseEntity<?> searchCards(@RequestParam(name = "query", required = false) String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Search query cannot be empty.");
+        }
+
+        System.out.println("Received search query: " + query); // Debugging output
+
+        List<Card> result = cardRepository.searchCards(query.trim());
+        return ResponseEntity.ok(result);
+    }
+    
     @PutMapping("/{id}")
     public ResponseEntity<Card> updateCard(@PathVariable Long id, @RequestBody Card updatedCard) {
         return cardRepository.findById(id)

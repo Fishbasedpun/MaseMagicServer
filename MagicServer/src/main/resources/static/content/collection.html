@@ -41,9 +41,12 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            loadCards();
-        });
+    $(document).ready(function () {
+	        let params = new URLSearchParams(window.location.search);
+	        let searchQuery = params.get("search"); // Get search query from URL
+	
+	        loadCards(searchQuery); // Load cards based on search
+	    });
         function escapeQuotes(str) {
             return str
                 ? str.replace(/\\/g, "\\\\") // Escape backslashes
@@ -53,8 +56,10 @@
                 : "";
         }
 
-        function loadCards() {
-            $.get("/api/cards", function (cards) {
+        function loadCards(searchQuery = "") {
+            let apiUrl = searchQuery ? `/api/cards/search?query=${encodeURIComponent(searchQuery)}` : "/api/cards";
+
+            $.get(apiUrl, function (cards) {
                 let cardContainer = $("#cardContainer");
                 cardContainer.html("");
 
@@ -82,10 +87,6 @@
                                 data-name="${escapeQuotes(card.name)}"
                                 data-type="${escapeQuotes(card.typeLine)}"
                                 data-text="${escapeQuotes(card.text)}"
-                                data-color="${escapeQuotes(card.color)}"
-                                data-cost="${card.cost}"
-                                data-power="${card.power}"
-                                data-toughness="${card.toughness}"
                                 data-image="${imagePath}">
                                 
                                 <img src="${imagePath}" class="card-img-top" alt="${escapeQuotes(card.name)}">
