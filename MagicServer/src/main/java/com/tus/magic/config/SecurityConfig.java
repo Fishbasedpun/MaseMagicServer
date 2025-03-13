@@ -2,6 +2,7 @@ package com.tus.magic.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,36 +33,33 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Configure the security filter chain.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    	return http
-    	        .csrf(csrf -> csrf.disable())
-    	        .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // Allow H2 Console frames
-    	        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    	        // Authorise requests configuration
-    	        .authorizeHttpRequests(authorize -> authorize
-    	            // Allow all requests to the H2 console
-    	            .requestMatchers("/h2-console/**").permitAll()
-    	            .requestMatchers("api/users/login").permitAll()
-    	            .requestMatchers("/sonarqube/**").permitAll()  // Allow SonarQube
-    	            .requestMatchers("/actuator/**").permitAll()
-    	            .requestMatchers("/api/cards").permitAll()
-    	            .requestMatchers("/uploads/**").permitAll()
-                    .requestMatchers("/api/users/{username}/favorites", "/favorites/**").authenticated()
-    	            .requestMatchers("/api/users/**").permitAll()
-    	            // Allow public access to specified endpoints and static resources
-    	            .requestMatchers(
-    	                "/",
-    	                "/index.html", 
-    	                "/script.js", 
-    	                "/styles.css", 
-    	                "/content/**", 
-    	                "/assets/**"  // This covers /assets and all its subfolders/files
-    	            ).permitAll()
-    	            .anyRequest().permitAll()
-    	        ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
+        http
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+            .authorizeHttpRequests(auth -> auth
+                // ✅ Public Access
+                .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cards", "/api/cards/search").permitAll()
+                .requestMatchers("/", "/uploads/**", "/index.html", "/content/**", "/styles.css", "/script.js", "/images/**").permitAll()
+
+                // ✅ USER Access
+                .requestMatchers(HttpMethod.GET, "/favorites/stats").hasAnyAuthority("ROLE_USER", "ROLE_SYSTEM_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/users/{username}/favorites").hasAnyAuthority("ROLE_USER","ROLE_SYSTEM_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/favorites/add").hasAnyAuthority("ROLE_USER","ROLE_SYSTEM_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/favorites/remove").hasAnyAuthority("ROLE_USER","ROLE_SYSTEM_ADMIN")
+
+                // ✅ SYSTEM_ADMIN Access
+                .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("ROLE_SYSTEM_ADMIN")
+                .requestMatchers("/**").hasAuthority("ROLE_SYSTEM_ADMIN")
+                .anyRequest().authenticated() // Require authentication for everything else
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT Filter
+
+        return http.build();
     }
+
     
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {

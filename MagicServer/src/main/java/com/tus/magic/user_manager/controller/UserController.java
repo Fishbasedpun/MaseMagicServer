@@ -41,7 +41,6 @@ public class UserController {
 		this.jwtService = jwtService;
 	}
 
-	@PreAuthorize("hasRole('System Administrator')")
 	@PostMapping
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
 		// Convert the DTO to a User entity
@@ -77,15 +76,12 @@ public class UserController {
 		return ((password.length() >= 8) && containsUpperCase && containsLowerCase && containsNumber);
 	}
 
-	// New endpoint to get all users
-	@PreAuthorize("hasRole('System Administrator')")
 	@GetMapping
 	public ResponseEntity<List<User>> getAllUsers() {
 		List<User> users = userService.getAllUsers();
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('System Administrator')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 		boolean deleted = userService.deleteUser(id);

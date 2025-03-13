@@ -19,6 +19,7 @@ function escapeQuotes(str) {
 }
 
 $(document).ready(function() {
+	updateAuthUI()
 	$("#searchButton").click(function () {
 	    let query = $("#searchInput").val().trim();
 	    if (query) {
@@ -79,19 +80,47 @@ $(document).ready(function() {
 	});
 		
 	function updateAuthUI() {
-        const token = localStorage.getItem("jwt");
-        if (token) {
-            const decodedToken = jwt_decode(token);
-            const username = decodedToken.sub|| "User";
-            
-            $("#login-btn").hide();
-            $("#user-info").show();
-            $("#username").text(username);
-        } else {
-            $("#login-btn").show();
-            $("#user-info").hide();
-        }
-    }
+	    let token = TokenStorage.getToken();
+	    console.log("Checking token on page load:", token);
+
+	    if (token) {
+	        try {
+	            const decodedToken = jwt_decode(token);
+	            console.log("Decoded Token:", decodedToken);
+
+	            const username = decodedToken.sub || "Unknown User";
+	            const role = decodedToken.role || "GUEST"; // Default role
+
+
+	            // Show user info
+	            $("#login-btn").hide();
+	            $("#user-info").show();
+	            $("#username").text(username);
+
+	            // Hide all elements first
+	            $(".admin-only, .user-only").hide();
+
+	            if (role.includes("ADMIN")) {
+	                $(".admin-only").show();
+	                $(".user-only").show();
+	            } else if (role.includes("USER")) {
+	                $(".user-only").show();
+	            } else {
+	                console.log("User role not recognized ('" + role + "'), hiding all elements.");
+	            }
+	        } catch (error) {
+	            console.error("Error decoding token:", error);
+	            TokenStorage.removeToken();
+	            updateAuthUI(); // Re-run with no token
+	        }
+	    } else {
+	        console.log("No token found. Hiding all elements.");
+	        $("#login-btn").show();
+	        $("#user-info").hide();
+	        $(".admin-only, .user-only").hide();
+	    }
+	}
+
 	
 	$('#login-btn').click(function() {
         $('#login-modal').show();
@@ -136,7 +165,6 @@ $(document).ready(function() {
 		})
 			.then(response => {
 				if (response.ok) {  // Check if HTTP status is 200 OK
-					console.log(response);
 					return response.json();  // Parse response as JSON (if any)
 				} else if (response.status === 401) {  // Unauthorized
 					showAlert('Invalid username or password!', 'danger');
@@ -145,22 +173,15 @@ $(document).ready(function() {
 				}
 			})
 			.then(data => {
-				{
-					console.log(data.jwt);
-					TokenStorage.saveToken(data.jwt);
+			    TokenStorage.saveToken(data.jwt);
 
-					// Decode the token to extract the role (requires jwt-decode library)
-					const decodedToken = jwt_decode(data.jwt);
-					const role = decodedToken.role;
-					// Save the role in localStorage
-					localStorage.setItem("role", role);
-					updateAuthUI();
-					$("#login-modal").fadeOut();
-					// **Force content load after login**
-					setTimeout(() => {
-						window.location.reload(); // Refresh to trigger script.js
-					}, 500);
-				}
+			    const decodedToken = jwt_decode(data.jwt);
+			    const role = decodedToken.role;
+			    localStorage.setItem("role", role);
+
+			    updateAuthUI(); // ✅ Update UI immediately after login
+
+			    $("#login-modal").fadeOut();
 			})
 			.catch(error => {
 				console.error('Error:', error);
@@ -183,8 +204,8 @@ $(document).ready(function() {
 	}
 	
 	$("#logout-btn").click(function() {
-        localStorage.removeItem("jwt");
-        updateAuthUI();
-    });
-	updateAuthUI();
+	    localStorage.removeItem("jwt");
+	    TokenStorage.removeToken();
+	    updateAuthUI(); // Ensure UI is reset
+	});
 });

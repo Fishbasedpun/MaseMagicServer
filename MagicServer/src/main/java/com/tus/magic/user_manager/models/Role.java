@@ -3,8 +3,8 @@ package com.tus.magic.user_manager.models;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum Role implements GrantedAuthority {
-    USER("User"),
-    SYSTEM_ADMIN("System Administrator");
+    USER("USER"),
+    SYSTEM_ADMIN("SYSTEM_ADMIN");
 
     private final String displayName;
 

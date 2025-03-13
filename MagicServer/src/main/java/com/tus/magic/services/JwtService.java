@@ -5,12 +5,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
+
 import com.tus.magic.user_manager.models.Role;
 import java.security.Key;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @Service
 public class JwtService {
@@ -50,4 +59,5 @@ public class JwtService {
 	private boolean isTokenExpired(String token) {
 		return extractClaim(token, Claims::getExpiration).before(new Date());
 	}
+	
 }
