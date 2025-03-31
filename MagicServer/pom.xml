@@ -123,6 +123,12 @@
 
         <!-- Testing Dependencies -->
         <dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-test</artifactId>
+		    <scope>test</scope>
+		</dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -131,6 +137,11 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.tus</groupId>
+        	<artifactId>team3</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -178,10 +189,19 @@
 
                 <!-- Spring Boot Maven Plugin -->
                 <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>3.4.2</version>
-                </plugin>
+			      <groupId>org.springframework.boot</groupId>
+			      <artifactId>spring-boot-maven-plugin</artifactId>
+			      <version>3.4.2</version>
+			      <executions>
+			        <execution>
+			          <id>process-test-aot</id>
+			          <goals>
+			            <goal>process-test-aot</goal>
+			          </goals>
+			          <phase>none</phase> <!-- disables automatic execution in Eclipse -->
+			        </execution>
+			      </executions>
+			    </plugin>
             </plugins>
         </pluginManagement>
     </build>

@@ -7,7 +7,13 @@ public class CreateUserRequest {
  private String password;
  private Role role;
 
- public String getUsername() {
+ public CreateUserRequest(String username, String password, Role role) {
+	this.username = username;
+	this.password = password;
+	this.role = role;
+}
+
+public String getUsername() {
      return username;
  }
 

@@ -7,7 +7,12 @@ public class LoginRequest {
     // Default constructor
     public LoginRequest() {}
 
-    // Getters and Setters
+    public LoginRequest(String username, String password) {
+    	this.username = username;
+    	this.password = password;
+	}
+
+	// Getters and Setters
     public String getUsername() {
         return username;
     }
